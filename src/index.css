@@ -1,0 +1,136 @@
+/* ============================================================================
+   Tailwind entry + the "Industry" design system.
+
+   Every value in the @theme block below is copied from the handoff bundle at
+   project/_ds/industry-.../styles.css. Declaring them inside @theme is what
+   turns them into real Tailwind utilities: `--color-accent-900` becomes
+   bg-accent-900 / text-accent-900 / border-accent-900, `--font-heading`
+   becomes font-heading, and so on. Retune the system here, not in components.
+   ========================================================================== */
+
+@import 'tailwindcss';
+
+@theme {
+  /* ---- fonts ---- */
+  --font-heading: 'Barlow Condensed', system-ui, sans-serif;
+  --font-body: 'Barlow', system-ui, sans-serif;
+
+  /* ---- core roles ---- */
+  --color-bg: #f2f2f3;
+  --color-surface: #e9e9ea;
+  --color-ink: #1d1f20; /* the design system calls this --color-text */
+  --color-accent: #5980a6;
+  --color-accent-2: #728fab;
+  --color-divider: color-mix(in srgb, #1d1f20 16%, transparent);
+
+  /* ---- tonal ramps (generated in OKLCH on one shared lightness scale) ---- */
+  --color-neutral-100: #f5f5f8;
+  --color-neutral-200: #e7e7ea;
+  --color-neutral-300: #d4d4d7;
+  --color-neutral-400: #b7b7ba;
+  --color-neutral-500: #98989b;
+  --color-neutral-600: #7a7a7d;
+  --color-neutral-700: #5d5d60;
+  --color-neutral-800: #424244;
+  --color-neutral-900: #2b2b2d;
+
+  --color-accent-100: #eef6ff;
+  --color-accent-200: #d6ebff;
+  --color-accent-300: #b5d9fd;
+  --color-accent-400: #94bce3;
+  --color-accent-500: #749dc4;
+  --color-accent-600: #597ea3;
+  --color-accent-700: #416180;
+  --color-accent-800: #2c455d;
+  --color-accent-900: #1d2d3d;
+
+  --color-accent-2-100: #eef6ff;
+  --color-accent-2-200: #d6ebff;
+  --color-accent-2-300: #bdd8f2;
+  --color-accent-2-400: #9ebbd8;
+  --color-accent-2-500: #7e9cb8;
+  --color-accent-2-600: #627d98;
+  --color-accent-2-700: #486077;
+  --color-accent-2-800: #314457;
+  --color-accent-2-900: #1f2d3a;
+
+  /* ---- elevation ---- */
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2b2b2d 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2b2b2d 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2b2b2d 22%, transparent);
+
+  /* The system is a blueprint/wireframe language: everything is square.
+     Neutralising the radius scale means a stray `rounded` can't sneak in. */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+}
+
+/* ---------------------------------------------------------------------------
+   Base layer — the handful of element defaults the design system sets.
+   ------------------------------------------------------------------------ */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Component layer — only for things utilities genuinely cannot express.
+
+   The blueprint registration marks are drawn with ::before/::after pseudo
+   elements on an empty <i>. Tailwind can style pseudo elements, but writing
+   `before:absolute before:left-[5px] before:top-0 before:w-px before:h-full
+   before:bg-current after:...` on four corners in every card is unreadable,
+   so the mark itself stays CSS and React wraps it in a <Blueprint> component.
+   ------------------------------------------------------------------------ */
+@layer components {
+  .corner {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  }
+  .corner::before,
+  .corner::after {
+    content: '';
+    position: absolute;
+    background: currentColor;
+  }
+  .corner::before { left: 5px; top: 0; width: 1px; height: 100%; }
+  .corner::after  { top: 5px; left: 0; width: 100%; height: 1px; }
+  .corner-tl { top: -6px; left: -6px; }
+  .corner-tr { top: -6px; right: -6px; }
+  .corner-bl { bottom: -6px; left: -6px; }
+  .corner-br { bottom: -6px; right: -6px; }
+  /* On an inverted (dark) card the marks flip to the light ink. */
+  .corner-inverted { color: rgb(242 242 243 / 0.6); }
+
+  /* Numeric columns must not jitter as values change. */
+  .tabular { font-variant-numeric: tabular-nums; }
+}
